@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/chrishlwoo/nomadcoin/utils"
-	"github.com/chrishlwoo/nomadcoin/wallet"
 )
 
 const (
@@ -47,7 +46,8 @@ type UTxOut struct {
 	Amount int
 }
 
-func isOnMempool(uTxOut *UTxOut) (exists bool) {
+func isOnMempool(uTxOut *UTxOut) bool {
+	exists := false
 Outer:
 	for _, tx := range Mempool.Txs{
 		for _, input := range tx.TxIns{
@@ -57,7 +57,7 @@ Outer:
 			}
 		}
 	}
-	return
+	return exists
 }
 
 func makeCoinbaseTx(address string) *Tx {
@@ -111,7 +111,7 @@ func makeTx(from, to string, amount int) (*Tx, error) {
 }
 
 func (m *mempool) AddTx(to string, amount int) error {
-	tx, err := makeTx(wallet.Wallet().Address, to, amount)
+	tx, err := makeTx("nico", to, amount)
 	if err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func (m *mempool) AddTx(to string, amount int) error {
 }
 
 func (m *mempool) TxToConfirm() []*Tx {
-	coinbase := makeCoinbaseTx(wallet.Wallet().Address)
+	coinbase := makeCoinbaseTx("nico")
 	txs := m.Txs
 	txs = append(txs, coinbase)
 	m.Txs = nil
