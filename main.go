@@ -1,5 +1,4 @@
 package main
-
 import (
 	"github.com/chrishlwoo/nomadcoin/cli"
 	"github.com/chrishlwoo/nomadcoin/db"
